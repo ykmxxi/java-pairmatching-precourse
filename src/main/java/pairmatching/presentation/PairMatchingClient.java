@@ -72,12 +72,30 @@ public class PairMatchingClient {
                                 .split(","))
                         .map(String::strip)
                         .toList();
+                if (existsPair(pairMatchingInputs)) {
+                    while (true) {
+                        try {
+                            String reMatchingInput = inputView.readPairReMatchingInput();
+                            if (reMatchingInput.equals("아니요")) {
+                                return runPairMatching();
+                            }
+                            break;
+                        } catch (IllegalArgumentException e) {
+                            outputView.printErrorMessage(e.getMessage());
+                        }
+                    }
+                }
                 return pairMatchingService.matchPair(pairMatchingInputs.get(0), pairMatchingInputs.get(1),
                         pairMatchingInputs.get(2));
             } catch (IllegalArgumentException e) {
                 outputView.printErrorMessage(e.getMessage());
             }
         }
+    }
+
+    private boolean existsPair(final List<String> pairMatchingInputs) {
+        return pairMatchingService.existsPairMatching(pairMatchingInputs.get(0), pairMatchingInputs.get(1),
+                pairMatchingInputs.get(2));
     }
 
 }

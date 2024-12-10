@@ -35,30 +35,36 @@ public class PairMatchingService {
         crewRepository.save(FRONTEND, mapToCrews(frontendCrewNames, FRONTEND));
     }
 
+    public boolean existsPairMatching(final String courseName, final String levelName, final String missionName) {
+        Course course = Course.find(courseName);
+        Mission mission = Level.findMission(levelName, missionName);
+        return pairMatchingRepository.containsPair(course, mission);
+    }
+
     public List<Pair> matchPair(final String courseName, final String levelName, final String missionName) {
         Course course = Course.find(courseName);
         Mission mission = Level.findMission(levelName, missionName);
         List<Crew> crews = crewRepository.find(course);
         List<Mission> missions = Level.findMissions(levelName);
-        List<Pair> pairs = match(missions, crews);
-        pairMatchingRepository.save(mission, pairs);
+        List<Pair> pairs = match(course, missions, crews);
+        pairMatchingRepository.save(course, mission, pairs);
         return pairs;
     }
 
     public List<Pair> findPair(final String courseName, final String levelName, final String missionName) {
         Course course = Course.find(courseName);
         Mission mission = Level.findMission(levelName, missionName);
-        return pairMatchingRepository.findPairs(mission);
+        return pairMatchingRepository.findPairs(course, mission);
     }
 
     public void clearPairHistory() {
         pairMatchingRepository.clear();
     }
 
-    private List<Pair> match(final List<Mission> missions, final List<Crew> crews) {
+    private List<Pair> match(final Course course, final List<Mission> missions, final List<Crew> crews) {
         List<Pair> pairs = getPairs(Randoms.shuffle(crews));
         int matchingCount = 1;
-        while (hasPairMatchingHistory(pairs, missions)) {
+        while (hasPairMatchingHistory(course, pairs, missions)) {
             validateOverMatchingCount(matchingCount);
             pairs = getPairs(Randoms.shuffle(crews));
             matchingCount++;
@@ -72,9 +78,9 @@ public class PairMatchingService {
         }
     }
 
-    private boolean hasPairMatchingHistory(final List<Pair> pairs, final List<Mission> missions) {
+    private boolean hasPairMatchingHistory(final Course course, final List<Pair> pairs, final List<Mission> missions) {
         for (Mission mission : missions) {
-            List<Pair> otherPairs = pairMatchingRepository.findPairs(mission);
+            List<Pair> otherPairs = pairMatchingRepository.findPairs(course, mission);
             if (isNeedReMatching(pairs, otherPairs)) {
                 return true;
             }
