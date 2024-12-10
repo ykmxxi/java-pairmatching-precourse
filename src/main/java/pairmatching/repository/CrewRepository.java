@@ -11,9 +11,14 @@ public class CrewRepository {
 
     private static final Map<Course, List<Crew>> CREWS = new EnumMap<>(Course.class);
 
-
     public void save(final Course course, final List<Crew> crews) {
         CREWS.put(course, crews);
+    }
+
+    public List<Crew> find(final Course course) {
+        return CREWS.get(course)
+                .stream()
+                .toList();
     }
 
 }

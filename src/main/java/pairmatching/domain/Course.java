@@ -18,4 +18,5 @@ public enum Course {
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 과정입니다. 다시 입력해주세요."));
     }
+
 }
