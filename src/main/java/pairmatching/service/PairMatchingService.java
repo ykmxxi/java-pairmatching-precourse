@@ -62,11 +62,11 @@ public class PairMatchingService {
     }
 
     private List<Pair> match(final Course course, final List<Mission> missions, final List<Crew> crews) {
-        List<Pair> pairs = getPairs(Randoms.shuffle(crews));
+        List<Pair> pairs = getPairs(Randoms.shuffle(crews.stream().map(Crew::getName).toList()), course);
         int matchingCount = 1;
         while (hasPairMatchingHistory(course, pairs, missions)) {
             validateOverMatchingCount(matchingCount);
-            pairs = getPairs(Randoms.shuffle(crews));
+            pairs = getPairs(Randoms.shuffle(crews.stream().map(Crew::getName).toList()), course);
             matchingCount++;
         }
         return pairs;
@@ -88,11 +88,11 @@ public class PairMatchingService {
         return false;
     }
 
-    private List<Pair> getPairs(final List<Crew> shuffledCrews) {
+    private List<Pair> getPairs(final List<String> shuffledCrewNames, final Course course) {
         List<Pair> pairs = new ArrayList<>();
-        int countOfPair = shuffledCrews.size() / 2;
+        int countOfPair = shuffledCrewNames.size() / 2;
         for (int pairIndex = 0; pairIndex < countOfPair; pairIndex++) {
-            List<Crew> pairCrews = getPairCrews(shuffledCrews, pairIndex, countOfPair);
+            List<Crew> pairCrews = getPairCrews(shuffledCrewNames, pairIndex, countOfPair, course);
             pairs.add(new Pair(pairCrews));
         }
         return pairs;
@@ -111,13 +111,15 @@ public class PairMatchingService {
         return false;
     }
 
-    private List<Crew> getPairCrews(final List<Crew> shuffledCrews, final int index, final int countOfPair) {
+    private List<Crew> getPairCrews(final List<String> shuffledCrewNames, final int index, final int countOfPair,
+                                    final Course course
+    ) {
         int startIndex = index * 2;
         List<Crew> pairCrews = new ArrayList<>();
-        pairCrews.add(shuffledCrews.get(startIndex));
-        pairCrews.add(shuffledCrews.get(startIndex + 1));
-        if (isThreePair(shuffledCrews.size(), index, countOfPair)) {
-            pairCrews.add(shuffledCrews.get(startIndex + 2));
+        pairCrews.add(new Crew(shuffledCrewNames.get(startIndex), course));
+        pairCrews.add(new Crew(shuffledCrewNames.get(startIndex + 1), course));
+        if (isThreePair(shuffledCrewNames.size(), index, countOfPair)) {
+            pairCrews.add(new Crew(shuffledCrewNames.get(startIndex + 2), course));
         }
         return pairCrews;
     }

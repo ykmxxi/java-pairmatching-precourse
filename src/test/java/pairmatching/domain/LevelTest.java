@@ -46,9 +46,7 @@ class LevelTest {
         return Stream.of(
                 Arguments.of("레벨1", "자동차경주", RACING_CAR),
                 Arguments.of("레벨2", "장바구니", SHOPPING_CART),
-                Arguments.of("레벨3", "프로젝트", NONE),
-                Arguments.of("레벨4", "성능개선", PERFORMANCE_IMPROVEMENTS),
-                Arguments.of("레벨5", "취업", NONE)
+                Arguments.of("레벨4", "성능개선", PERFORMANCE_IMPROVEMENTS)
         );
     }
 

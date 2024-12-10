@@ -46,10 +46,12 @@ public class PairMatchingClient {
             outputView.printPairs(pairs);
         }
         if (featureChoice.equals("2")) {
-            // 페어 조회
+            List<Pair> pairs = findPair();
+            outputView.printPairs(pairs);
         }
         if (featureChoice.equals("3")) {
-            // 페어 초기화
+            pairMatchingService.clearPairHistory();
+            outputView.printClearMessage();
         }
     }
 
@@ -86,6 +88,21 @@ public class PairMatchingClient {
                     }
                 }
                 return pairMatchingService.matchPair(pairMatchingInputs.get(0), pairMatchingInputs.get(1),
+                        pairMatchingInputs.get(2));
+            } catch (IllegalArgumentException e) {
+                outputView.printErrorMessage(e.getMessage());
+            }
+        }
+    }
+
+    private List<Pair> findPair() {
+        while (true) {
+            try {
+                List<String> pairMatchingInputs = Arrays.stream(inputView.readPairMatchingInput()
+                                .split(","))
+                        .map(String::strip)
+                        .toList();
+                return pairMatchingService.findPair(pairMatchingInputs.get(0), pairMatchingInputs.get(1),
                         pairMatchingInputs.get(2));
             } catch (IllegalArgumentException e) {
                 outputView.printErrorMessage(e.getMessage());
