@@ -20,4 +20,8 @@ public class PairMatchingRepository {
         return MATCHING_HISTORIES.getOrDefault(mission, List.of());
     }
 
+    public void clear() {
+        MATCHING_HISTORIES.clear();
+    }
+
 }

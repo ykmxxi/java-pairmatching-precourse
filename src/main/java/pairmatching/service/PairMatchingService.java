@@ -51,6 +51,10 @@ public class PairMatchingService {
         return pairMatchingRepository.findPairs(mission);
     }
 
+    public void clearPairHistory() {
+        pairMatchingRepository.clear();
+    }
+
     private List<Pair> match(final List<Mission> missions, final List<Crew> crews) {
         List<Pair> pairs = getPairs(Randoms.shuffle(crews));
         int matchingCount = 1;
