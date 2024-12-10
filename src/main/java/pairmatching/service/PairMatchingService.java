@@ -45,6 +45,12 @@ public class PairMatchingService {
         return pairs;
     }
 
+    public List<Pair> findPair(final String courseName, final String levelName, final String missionName) {
+        Course course = Course.find(courseName);
+        Mission mission = Level.findMission(levelName, missionName);
+        return pairMatchingRepository.findPairs(mission);
+    }
+
     private List<Pair> match(final List<Mission> missions, final List<Crew> crews) {
         List<Pair> pairs = getPairs(Randoms.shuffle(crews));
         int matchingCount = 1;
