@@ -1,7 +1,9 @@
 package pairmatching.presentation;
 
+import java.util.Arrays;
 import java.util.List;
 
+import pairmatching.domain.Pair;
 import pairmatching.presentation.file.FileReader;
 import pairmatching.presentation.view.InputView;
 import pairmatching.presentation.view.OutputView;
@@ -34,16 +36,20 @@ public class PairMatchingClient {
             if (FeatureCommand.isQuit(featureChoice)) {
                 break;
             }
-            if (featureChoice.equals("1")) {
-                // 페어 매칭
-            }
-            if (featureChoice.equals("2")) {
-                // 페어 조회
-            }
-            if (featureChoice.equals("3")) {
-                // 페어 초기화
-                pairMatchingService.clearPairHistory();
-            }
+            runFeature(featureChoice);
+        }
+    }
+
+    private void runFeature(final String featureChoice) {
+        if (featureChoice.equals("1")) {
+            List<Pair> pairs = runPairMatching();
+            outputView.printPairs(pairs);
+        }
+        if (featureChoice.equals("2")) {
+            // 페어 조회
+        }
+        if (featureChoice.equals("3")) {
+            // 페어 초기화
         }
     }
 
@@ -53,6 +59,21 @@ public class PairMatchingClient {
                 String featureChoice = inputView.readFeatureChoice();
                 FeatureCommand.validateFeatureCommand(featureChoice);
                 return featureChoice;
+            } catch (IllegalArgumentException e) {
+                outputView.printErrorMessage(e.getMessage());
+            }
+        }
+    }
+
+    private List<Pair> runPairMatching() {
+        while (true) {
+            try {
+                List<String> pairMatchingInputs = Arrays.stream(inputView.readPairMatchingInput()
+                                .split(","))
+                        .map(String::strip)
+                        .toList();
+                return pairMatchingService.matchPair(pairMatchingInputs.get(0), pairMatchingInputs.get(1),
+                        pairMatchingInputs.get(2));
             } catch (IllegalArgumentException e) {
                 outputView.printErrorMessage(e.getMessage());
             }

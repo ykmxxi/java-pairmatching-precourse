@@ -26,6 +26,12 @@ public class Pair {
         throw new IllegalStateException("세 명의 크루로 이루어진 페어만 호출할 수 있습니다.");
     }
 
+    public List<String> getNames() {
+        return pair.stream()
+                .map(Crew::getName)
+                .toList();
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
